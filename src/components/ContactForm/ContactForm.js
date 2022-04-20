@@ -1,12 +1,41 @@
 import  { useState } from 'react';
 import s from "./contactForm.module.css"
 import { nanoid } from 'nanoid'
+import { useSelector, useDispatch } from 'react-redux'
+import { addContact} from '../../redux/contactSlice'
 
 function ContactForm ({onSubmitAdd}) {
     const [name, setName ]=useState('')
     const [number, setNumber ]=useState('')
+   
+    const contacts = useSelector(state => state.contact);
     const   nameInputId=nanoid();
     const  numberInputId=nanoid();
+
+
+    
+  const dispatch = useDispatch();
+
+  const onSaveContactClicked = (data) => {
+  const message = `${data.name} is alredy in contacts`;
+  const findName = contacts.find(contact => contact.name.toLowerCase() === data.name.toLowerCase());
+  const findNumber = contacts.find(contact => contact.number === data.number);
+
+  if (findName || findNumber !== undefined) {
+    alert(message);
+    return
+  };
+  
+  if (contacts) {
+    dispatch(
+      addContact({
+          id: nanoid(),
+          name: data.name,
+          number: data.number
+      }))
+     
+  }
+}
 
   const  handleChacgeName=e=>{
     setName(e.target.value);
@@ -17,7 +46,7 @@ function ContactForm ({onSubmitAdd}) {
     
    const handleSubmit=(e)=>{
         e.preventDefault()
-        onSubmitAdd({ name, number })  
+        onSaveContactClicked({ name, number })  
     reset();
     }
 

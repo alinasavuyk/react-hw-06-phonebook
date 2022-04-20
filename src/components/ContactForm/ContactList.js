@@ -1,20 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import s from "./contactForm.module.css"
-import { useDispatch, } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import { deleteContact} from '../../redux/contactSlice'
 
 
 
-const ContactList =({contacts})=>{
+const ContactList =()=>{
   const dispatch = useDispatch();
+  
+  const filters = useSelector(state => state.filter);
+  const contacts = useSelector(state => state.contact);
+const normalizeFilter = filters.toLowerCase();
+const filterContacts = contacts.filter(contact => contact.name.toLowerCase().includes(normalizeFilter));
   return (
 
 
 <ul className={s.contactList}>
   
    {
-    contacts.map(({id,name, number})=>{
+    filterContacts.map(({id,name, number})=>{
       return(
         <li key={id}
         className={s.contactList_item}>
